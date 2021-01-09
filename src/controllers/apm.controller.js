@@ -1,50 +1,66 @@
-const {Apm} = require('../models')
+const { Apm } = require("../models");
 
-class ApmController{
+class ApmController {
+  getAll = async (req, res) => {
+    const apms = await Apm.findAll({
+      order: [["id", "DESC"]],
+    });
 
-    getAll = async (req,res) =>{
-        const apms = await Apm.findAll({
-            order : [
-                ['id','DESC']
-            ]
-        });
+    return res.status(200).json({
+      data: apms,
+      status: "success",
+    });
+  };
 
-        return res.status(200).json({
-            data : apms,
-            status : 'success'
-        })
+  get = async (req, res) => {
+    const { id } = req.params;
+
+    const apm = await Apm.findOne({
+      where: { id },
+    });
+
+    if (!apm) {
+      const error = new Error("Apm not found");
+      error.status = 404;
+      throw error;
     }
 
-    get = async(req,res) =>{
-        const {id} = req.params;
+    return res.status(200).json({
+      data: apm,
+      status: "success",
+    });
+  };
 
-        const apm = await Apm.findOne({
-            where : {id}
-        })
+  create = async (req, res) => {
+    const { body } = req;
 
-        if (!apm){
-            const error = new Error('Apm not found');
-            error.status = 404;
-            throw error;
-        }
+    const apm = await Apm.create(body);
 
-        return res.status(200).json({
-            data : apm,
-            status : 'success'
-        })
+    return res.status(201).json({
+      data: apm,
+      status: "success",
+    });
+  };
+
+  update = async (req, res) => {
+    const { id: apmId } = req.params;
+    const { body } = req;
+
+    const apm = await Apm.findByPk(apmId);
+
+    if (!apm){
+        const error = new Error('Apm not found');
+        error.status = 404;
+        throw error;
     }
 
-    create = async (req,res) =>{
+    await apm.update(body);
 
-        const {body} = req;
-
-        const apm = await Apm.create(body);
-
-        return res.status(201).json({
-            data : apm,
-            status : 'success'
-        })
-    }
+    return res.status(200).json({
+        data: apm,
+        status: "success",
+    });
+  };
 }
 
 module.exports = ApmController;

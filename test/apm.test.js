@@ -50,4 +50,18 @@ describe('Apm Routes',() =>{
 
         done();
     })
+
+    it('Should update a Apm', async (done) =>{
+        const res = await request(app)
+            .put('/api/v1/apm/' + apmId)
+            .send({
+                name : 'new_test_apm',
+                command : 'new_test'
+            })
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.data.name).toBe('new_test_apm');
+        
+        done();
+    })
 })
