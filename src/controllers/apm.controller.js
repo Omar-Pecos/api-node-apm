@@ -1,24 +1,30 @@
 const {Apm} = require('../models')
 
 class ApmController{
-    create = async (req,res,next) =>{
-       try {
 
-            const {body} = req;
+    getAll = async (req,res) =>{
+        const apms = await Apm.findAll({
+            order : [
+                ['id','DESC']
+            ]
+        });
 
-            const apm = await Apm.create(body);
+        return res.status(200).json({
+            data : apms,
+            status : 'success'
+        })
+    }
 
-            return res.status(201).json({
-                data : apm,
-                status : 'success'
-            })
+    create = async (req,res) =>{
 
-       } catch (error) {
+        const {body} = req;
 
-            console.log(error.message);
-            return next(error);
-            
-       } 
+        const apm = await Apm.create(body);
+
+        return res.status(201).json({
+            data : apm,
+            status : 'success'
+        })
     }
 }
 

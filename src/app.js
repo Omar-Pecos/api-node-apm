@@ -2,6 +2,8 @@ const express = require('express')
 const {Router} = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+require('express-async-errors');
+
 const {ApmRoutes} = require('./routes')
 const {ErrorMiddleware,ValidationMiddleware} = require('./middlewares')
 
@@ -22,6 +24,7 @@ app.get('/',(req,res) =>{
 apiRouter.use('/apm', ApmRoutes);
 
 app.use('/api/v1', apiRouter);
+
 app.use(ValidationMiddleware);
 app.use(ErrorMiddleware);
 
