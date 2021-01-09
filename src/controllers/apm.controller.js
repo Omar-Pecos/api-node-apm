@@ -61,6 +61,25 @@ class ApmController {
         status: "success",
     });
   };
+
+  delete = async (req,res) =>{
+    const {id : apmId} = req.params;
+
+    const apm = await Apm.findByPk(apmId);
+
+    if (!apm){
+        const error = new Error('Apm not found');
+        error.status = 404;
+        throw error;
+    }
+
+    await apm.destroy();
+
+    return res.status(200).json({
+        data: apm,
+        status: "success",
+    });
+  }
 }
 
 module.exports = ApmController;

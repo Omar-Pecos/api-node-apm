@@ -64,4 +64,14 @@ describe('Apm Routes',() =>{
         
         done();
     })
+
+    it('Should delete a Apm', async (done) =>{
+        const res = await request(app)
+            .delete('/api/v1/apm/' + apmId);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.status).toBe('success');
+
+        done();
+    })
 })
