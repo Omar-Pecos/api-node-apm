@@ -15,6 +15,25 @@ class ApmController{
         })
     }
 
+    get = async(req,res) =>{
+        const {id} = req.params;
+
+        const apm = await Apm.findOne({
+            where : {id}
+        })
+
+        if (!apm){
+            const error = new Error('Apm not found');
+            error.status = 404;
+            throw error;
+        }
+
+        return res.status(200).json({
+            data : apm,
+            status : 'success'
+        })
+    }
+
     create = async (req,res) =>{
 
         const {body} = req;

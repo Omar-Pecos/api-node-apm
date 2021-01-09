@@ -1,6 +1,8 @@
 const request = require('supertest')
 const app = require('../src/app')
 
+let apmId = null;
+
 describe('Apm Routes',() =>{
     it('Should create a new Apm', async (done) =>{
         const res = await request(app)
@@ -15,6 +17,8 @@ describe('Apm Routes',() =>{
         expect(res.statusCode).toBe(201);
         expect(res.body.status).toBe('success');
 
+        apmId = res.body.data.id;
+
         done();
     })
 
@@ -24,6 +28,26 @@ describe('Apm Routes',() =>{
 
         expect(res.body.status).toBe('success');
         expect(res.body.data.length).toBeGreaterThan(0);
+        done();
+    })
+
+    it('Should return an Apm by Id',async (done) =>{
+        const res = await request(app)
+            .get('/api/v1/apm/' + apmId)
+        
+        expect(res.statusCode).toBe(200);
+        expect(res.body.status).toBe('success');
+
+        done();
+    })
+
+    it('Should return 404 finding Apm by Id',async (done) =>{
+        const res = await request(app)
+            .get('/api/v1/apm/' + 999)
+        
+        expect(res.statusCode).toBe(404);
+        expect(res.body.status).toBe('error');
+
         done();
     })
 })

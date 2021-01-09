@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 require('express-async-errors');
 
 const {ApmRoutes} = require('./routes')
-const {ErrorMiddleware,ValidationMiddleware} = require('./middlewares')
+const {ErrorMiddleware,ValidationMiddleware, NotFoundMiddleware} = require('./middlewares')
 
 const app = express();
 const apiRouter = new Router();
@@ -25,6 +25,7 @@ apiRouter.use('/apm', ApmRoutes);
 
 app.use('/api/v1', apiRouter);
 
+app.use(NotFoundMiddleware);
 app.use(ValidationMiddleware);
 app.use(ErrorMiddleware);
 

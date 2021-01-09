@@ -8,7 +8,7 @@
     "dev": "nodemon index.js",
     "migrate": "cd src && npx sequelize-cli db:migrate",
     "migrate:reset": "cd src && npx sequelize-cli db:migrate:undo:all && npm run migrate",
-    "test": "cross-env NODE_ENV=test jest --testTimeout=10000 --detectOpenHandles",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=10000 --detectOpenHandles --coverage",
     "pretest": "cross-env NODE_ENV=test npm run migrate:reset"
   },
   "keywords": [],
