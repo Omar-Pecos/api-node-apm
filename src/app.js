@@ -25,6 +25,8 @@ apiRouter.use('/apm', ApmRoutes);
 
 app.use('/api/v1', apiRouter);
 
+// MY MIDDLEWARES
+    //take care with chained middlewares - m1(err) => next(err) - m2(err) - etc
 app.use(NotFoundMiddleware);
 app.use(ValidationMiddleware);
 app.use(ErrorMiddleware);

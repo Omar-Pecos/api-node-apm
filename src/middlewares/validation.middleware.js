@@ -2,18 +2,24 @@ const { ValidationError, ValidationErrorItem } = require("sequelize");
 
 module.exports = (err,req,res,next) =>{
 
-    //Errores validacion
-    if (err.errors){
+    //Validation Error
+    if (err instanceof ValidationError){
         var errCollection = err.errors;
-        var errMessages = errCollection.map(err => err.message);
+        var errorMessage = '';
+
+        errCollection.map((err,i) =>{
+            errorMessage += err.message;
+            if (i < (errCollection.length - 1))
+                errorMessage += ', ';
+        });
         
-        if (errCollection[0] instanceof ValidationErrorItem){
-            return res.status(400).json({
-                status : 'error',
-                errors : errMessages
-            })
-        }
+        return res.status(400).json({
+            status : 'error',
+            error : errorMessage
+        })
     }
+
+    next(err);
 
      /* //1062 - Entrada duplicada
      if (err instanceof ValidationError){
@@ -23,6 +29,4 @@ module.exports = (err,req,res,next) =>{
         })
     }*/
 
-   
-    next();
 }
