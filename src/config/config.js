@@ -29,5 +29,6 @@ module.exports = {
     "database": DB_PROD_NAME,
     "host": DB_PROD_HOST,
     "dialect": "mysql",
+    "logging" : false
   }
 }
