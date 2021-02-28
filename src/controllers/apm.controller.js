@@ -34,10 +34,10 @@ class ApmController {
 
   create = async (req, res) => {
     const { body } = req;
-    
+
     //small validation
     this.validateInput(body);
-    
+
     // try/catch block is not needed cause we using express-async-errors
     const apm = await Apm.create(body);
 
@@ -56,67 +56,91 @@ class ApmController {
 
     const apm = await Apm.findByPk(apmId);
 
-    if (!apm){
-        const error = new Error('Apm not found');
-        error.status = 404;
-        throw error;
+    if (!apm) {
+      const error = new Error("Apm not found");
+      error.status = 404;
+      throw error;
     }
 
     await apm.update(body);
 
     return res.status(200).json({
-        data: apm,
-        status: "success",
+      data: apm,
+      status: "success",
     });
   };
 
-  delete = async (req,res) =>{
-    const {id : apmId} = req.params;
+  delete = async (req, res) => {
+    const { id: apmId } = req.params;
 
     const apm = await Apm.findByPk(apmId);
 
-    if (!apm){
-        const error = new Error('Apm not found');
-        error.status = 404;
-        throw error;
+    if (!apm) {
+      const error = new Error("Apm not found");
+      error.status = 404;
+      throw error;
     }
 
     await apm.destroy();
 
     return res.status(200).json({
-        data: apm,
-        status: "success",
+      data: apm,
+      status: "success",
     });
-  }
+  };
 
-  validateInput(body){
-    const error = new ValidationError('Validation Error');
+  findByCommand = async (req, res) => {
+    let { command } = req.params;
+
+    if (command == "0") {
+      command = null;
+    }
+
+    let apm = await Apm.findOne({
+      where: { command },
+    });
+
+    if (!apm) {
+      apm = await randomApmFromAll();
+    }
+
+    return res.status(200).json({
+      data: apm,
+      status: "success",
+    });
+  };
+
+  validateInput(body) {
+    const error = new ValidationError("Validation Error");
     var errors = [];
 
-    if (body.name != undefined && body.name == ''){
-      errors.push(
-        new ValidationErrorItem('Name can´t be a empty string')
-      );
+    if (body.name != undefined && body.name == "") {
+      errors.push(new ValidationErrorItem("Name can´t be a empty string"));
     }
 
-    if (body.command != undefined && body.command == ''){
-      errors.push(
-        new ValidationErrorItem('Command can´t be a empty string')
-      );
+    if (body.command != undefined && body.command == "") {
+      errors.push(new ValidationErrorItem("Command can´t be a empty string"));
     }
 
-    if (body.url != undefined && body.url == ''){
-      errors.push(
-        new ValidationErrorItem('Url can´t be a empty string')
-      );
+    if (body.url != undefined && body.url == "") {
+      errors.push(new ValidationErrorItem("Url can´t be a empty string"));
     }
 
-    if (errors.length > 0){
-        error.errors = errors;
-        throw error;
+    if (errors.length > 0) {
+      error.errors = errors;
+      throw error;
     }
-
   }
 }
+
+const randomApmFromAll = async () => {
+  const result = await Apm.findAndCountAll({});
+
+  const { rows, count } = result;
+
+  const pos = Math.floor(Math.random() * count);
+
+  return rows[pos];
+};
 
 module.exports = ApmController;
